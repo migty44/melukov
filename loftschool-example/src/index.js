@@ -74,19 +74,10 @@ function returnCounter(number) {
  Функция должна привязать переданные аргументы к функции F и вернуть получившуюся функцию
  */
 function bindFunction(fn) {
-
-    var dst = {};
-
-	for(var i = 1; i < arguments.length; i++){
-        var arg = arguments[i];
-        for(var key in arg){
-          dst[key] = arg[key];
-        }
+    for(var i = 1; i < arguments.length; i++){
+        fn = fn.bind(null, arguments[i]);
     }
-
-    var g = fn.bind(dst);
-
-    return g;
+    return fn;
 }
 
 export {
