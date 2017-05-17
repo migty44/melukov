@@ -109,32 +109,51 @@ function slice(array, from, to) {
 
     var newArr = [];
 
+    if ( typeof from == 'undefined' ){
+        var from = 0;
+    }
+
+    if ( typeof to == 'undefined' ){
+        var to = array.length;
+    }
+
     if ( from < 0 ) {
 
         from += array.length;
+
+        if (from < 0) {
+            
+            from = 0;
+        }
     }
 
     if ( to < 0 ) {
 
         to += array.length;
 
+        if (to < 0) {
+
+            return newArr;
+
+        }
+
     }
 
-    if ( ! to ) {
+    if ( to > array.length ) {
 
-        var to = array.length;
+        to = array.length;
 
     }
 
-    if ( to < from ) {
+    if ( from > to ) {
 
         return newArr;
 
     }
 
-    for (var i = from ; i < to ; i++){
+    for ( from ; from < to ; from++){
 
-        newArr.push(array[i]);
+        newArr.push(array[from]);
 
     }
 
@@ -148,6 +167,18 @@ function slice(array, from, to) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+
+     return obj = new Proxy(obj, {
+
+        set( target, prop, value ) {
+
+            target[prop] = value ** 2;
+
+            return target[prop];
+
+        }
+
+    });
 }
 
 
