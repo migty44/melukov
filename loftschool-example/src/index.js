@@ -1,90 +1,162 @@
-/* ДЗ 1 - Функции */
+/* ДЗ 3 - работа с массивами и объеектами */
 
 /*
- Задание 1:
-
- Функция должна принимать один аргумент и возвращать его
+ Задача 1:
+ Напишите аналог встроенного метода forEach для работы с массивами
  */
-function returnFirstArgument(arg) {
-	return arg;
-}
-
-/*
- Задание 2:
-
- Функция должна принимать два аргумента и возвращать сумму переданных значений
- Значение по умолчанию второго аргумента должно быть 100
- */
-function defaultParameterValue(a, b) {
-	b = b || 100;
-	return (a+b);
-}
-
-/*
- Задание 3:
-
- Функция должна возвращать все переданные в нее аргументы в виде массива
- Количество переданных аргументов заранее неизвестно
- */
-function returnArgumentsArray() {
-
-	var result = [];
-
-    for (var i=0; i<arguments.length; i++){
-        result[i] = arguments[i];
-    }
-
-    //или можно преобразовать объект arguments в массив с вычетом последнего значения
-
-    return result;
-}
-
-/*
- Задание 4:
-
- Функция должна принимать другую функцию и возвращать результат вызова переданной функции
- */
-function returnFnResult(fn) {
-	return fn();
-}
-
-/*
- Задание 5:
-
- Функция должна принимать число (значение по умолчанию - 0) и возвращать функцию (F)
- При вызове F, переданное число должно быть увеличено на единицу и возвращено из F
- */
-function returnCounter(number) {
-
-	number = number || 0;
-
-	function F(){
-
-		return number += 1;
-
+function forEach(array, fn) {
+	for (var i = 0 ; i < array.length ; i++) {
+		fn(array[i], i, array);
 	}
-
-	return F;
 }
 
 /*
- Задание 6 *:
-
- Функция должна принимать другую функцию (F) и некоторое количество дополнительных аргументов
- Функция должна привязать переданные аргументы к функции F и вернуть получившуюся функцию
+ Задача 2:
+ Напишите аналог встроенного метода map для работы с массивами
  */
-function bindFunction(fn) {
-    for(var i = 1; i < arguments.length; i++){
-        fn = fn.bind(null, arguments[i]);
+function map(array, fn) {
+
+    var arrNew = [];
+
+    for (var i = 0 ; i < array.length ; i++) {
+
+            arrNew[i] = fn(array[i], i, array);
+            
     }
-    return fn;
+
+    return arrNew;
+
 }
+
+/*
+ Задача 3:
+ Напишите аналог встроенного метода reduce для работы с массивами
+ */
+function reduce(array, fn, initial) {
+
+
+    if (initial) {
+
+        var pre = initial;
+        var i = 0;
+
+    }else{
+
+        var pre = array[0];
+        var i = 1;
+          
+    }
+    
+
+    for ( i ; i < array.length ; i++) {
+        pre = fn( pre, array[i], i, array);
+    }
+
+    return pre;
+
+}
+
+/*
+ Задача 4:
+ Функция принимает объект и имя свойства, которое необходиом удалить из объекта
+ Функция должна удалить указанное свойство из указанного объекта
+ */
+function deleteProperty(obj, prop) {
+    delete obj[prop];
+}
+
+/*
+ Задача 5:
+ Функция принимает объект и имя свойства и возвращает true или false
+ Функция должна проверить существует ли укзаанное свойство в указанном объекте
+ */
+function hasProperty(obj, prop) {
+    return obj.hasOwnProperty(prop);
+}
+
+/*
+ Задача 6:
+ Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
+ */
+function getEnumProps(obj) {
+    return Object.keys(obj);
+}
+
+/*
+ Задача 7:
+ Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
+ */
+function upperProps(obj) {
+
+    var arr = [];
+
+    for (var prop in obj) {
+
+        arr.push(prop.toUpperCase());
+
+    }
+
+    return arr;
+}
+
+/*
+ Задача 8 *:
+ Напишите аналог встроенного метода slice для работы с массивами
+ */
+function slice(array, from, to) {
+
+    var newArr = [];
+
+    if ( from < 0 ) {
+
+        from += array.length;
+    }
+
+    if ( to < 0 ) {
+
+        to += array.length;
+
+    }
+
+    if ( ! to ) {
+
+        var to = array.length;
+
+    }
+
+    if ( to < from ) {
+
+        return newArr;
+
+    }
+
+    for (var i = from ; i < to ; i++){
+
+        newArr.push(array[i]);
+
+    }
+
+    return newArr;
+
+}
+
+/*
+ Задача 9 *:
+ Функция принимает объект и должна вернуть Proxy для этого объекта
+ Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
+ */
+function createProxy(obj) {
+}
+
 
 export {
-    returnFirstArgument,
-    defaultParameterValue,
-    returnArgumentsArray,
-    returnFnResult,
-    returnCounter,
-    bindFunction
-}
+    forEach,
+    map,
+    reduce,
+    deleteProperty,
+    hasProperty,
+    getEnumProps,
+    upperProps,
+    slice,
+    createProxy
+};
