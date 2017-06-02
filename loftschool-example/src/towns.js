@@ -36,7 +36,39 @@ let homeworkContainer = document.querySelector('#homework-container');
  * @return {Promise<Array<{name: string}>>}
  */
 function loadTowns() {
+
+	var src = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
+
+	function userCompare(a, b) {
+	  var r = 0;
+
+	  if (a.name > b.name) { r = 1; }
+	  if (a.name < b.name) { r = -1; }
+
+	  return r;
+	}
+
+	return new Promise(function(resolve, reject) {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', src);
+		xhr.responseType = 'json';
+		xhr.send();
+		xhr.addEventListener('load', function() {
+			var arr = xhr.response;
+			arr.sort(userCompare);
+
+			resolve(arr);
+		});
+	})
 }
+
+var pp = loadTowns();
+var arr = pp.then(function(arr) {
+
+	return arr;
+
+})
 
 /**
  * Функция должна проверять встречается ли подстрока chunk в строке full
@@ -52,6 +84,20 @@ function loadTowns() {
  * @return {boolean}
  */
 function isMatching(full, chunk) {
+	
+	if( ~ full.toLowerCase().indexOf(chunk.toLowerCase())) {
+
+		// если не найдено то -1, о даст фолс при приведении а любой другое число даст тру
+		// если найдено то вернет позицию вхождения
+		// таким образом тут будет код при успехе выполнен
+
+		return true;
+
+	} else {
+		
+		return false;
+	}
+
 }
 
 let loadingBlock = homeworkContainer.querySelector('#loading-block');
@@ -60,7 +106,23 @@ let filterInput = homeworkContainer.querySelector('#filter-input');
 let filterResult = homeworkContainer.querySelector('#filter-result');
 let townsPromise;
 
-filterInput.addEventListener('keyup', function() {
+filterInput.addEventListener('keyup', function(e) {
+
+	filterResult.innerHTML = '';
+
+	let keykode = String.fromCharCode(e.keyCode);
+
+	for (let i=0; i < arr.lenght; i++) {
+
+		let fullname = arr[i].name;
+
+		if (isMatching(fullname, keykode)) { 
+			let div = document.createElement('div');
+			div.innerHTML = fullname;
+			filterResult.appendChild(div);
+		}
+	}
+	
 });
 
 export {
