@@ -54,6 +54,25 @@ function loadTowns() {
 		xhr.open('GET', src);
 		xhr.responseType = 'json';
 		xhr.send();
+
+		/*
+
+		xhr.timeout = 3000;
+		xhr.ontimeout = function() {
+		  alert( 'Извините, запрос превысил максимальное время' );
+		}
+
+		if (xhr.status != 200) {
+			reject();
+		}
+
+		xhr.addEventListener('error', function() {
+			reject();
+
+		}); 
+
+		*/
+
 		xhr.addEventListener('load', function() {
 			var arr = xhr.response;
 			arr.sort(userCompare);
@@ -62,13 +81,6 @@ function loadTowns() {
 		});
 	})
 }
-
-var pp = loadTowns();
-var arr = pp.then(function(arr) {
-
-	return arr;
-
-})
 
 /**
  * Функция должна проверять встречается ли подстрока chunk в строке full
@@ -104,26 +116,45 @@ let loadingBlock = homeworkContainer.querySelector('#loading-block');
 let filterBlock = homeworkContainer.querySelector('#filter-block');
 let filterInput = homeworkContainer.querySelector('#filter-input');
 let filterResult = homeworkContainer.querySelector('#filter-result');
-let townsPromise;
+let townsPromise = loadTowns();
 
-filterInput.addEventListener('keyup', function(e) {
 
-	filterResult.innerHTML = '';
+let arr = townsPromise.then(function(arr) {
 
-	let keykode = String.fromCharCode(e.keyCode);
+	loadingBlock.style.display = 'none';
+	filterBlock.style.display = 'block';
 
-	for (let i=0; i < arr.lenght; i++) {
 
-		let fullname = arr[i].name;
+	filterInput.addEventListener('keyup', function(e) {
 
-		if (isMatching(fullname, keykode)) { 
-			let div = document.createElement('div');
-			div.innerHTML = fullname;
-			filterResult.appendChild(div);
+		filterResult.innerHTML = '';
+
+		let inpVal = this.value.toLowerCase()
+
+		if (inpVal !== '') {
+
+			let keykode = String.fromCharCode(e.keyCode).toLowerCase();	
+
+			for (let i=0; i < arr.length; i++) {
+
+				let fullname = arr[i].name;
+
+				if (isMatching(fullname, inpVal)) { 
+					let div = document.createElement('div');
+					div.innerHTML = fullname;
+					filterResult.appendChild(div);
+				}
+			}
+
 		}
-	}
-	
+
+		
+	});
+
 });
+
+
+
 
 export {
     loadTowns,
