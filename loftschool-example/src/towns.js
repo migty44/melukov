@@ -55,6 +55,11 @@ function loadTowns() {
 		xhr.responseType = 'json';
 		xhr.send();
 
+
+		if (xhr.status > 399) {
+			reject();
+		}
+
 		/*
 
 		xhr.timeout = 3000;
@@ -62,9 +67,6 @@ function loadTowns() {
 		  alert( 'Извините, запрос превысил максимальное время' );
 		}
 
-		if (xhr.status != 200) {
-			reject();
-		}
 
 		xhr.addEventListener('error', function() {
 			reject();
@@ -112,20 +114,15 @@ function isMatching(full, chunk) {
 
 }
 
-let loadingBlock = homeworkContainer.querySelector('#loading-block');
-let filterBlock = homeworkContainer.querySelector('#filter-block');
-let filterInput = homeworkContainer.querySelector('#filter-input');
-let filterResult = homeworkContainer.querySelector('#filter-result');
-let townsPromise = loadTowns();
+function searchel(arr) {
 
-
-let arr = townsPromise.then(function(arr) {
+	console.log('arr = ' + arr);
 
 	loadingBlock.style.display = 'none';
 	filterBlock.style.display = 'block';
 
-
 	filterInput.addEventListener('keyup', function(e) {
+
 
 		filterResult.innerHTML = '';
 
@@ -145,15 +142,38 @@ let arr = townsPromise.then(function(arr) {
 					filterResult.appendChild(div);
 				}
 			}
-
 		}
-
-		
 	});
+}
 
-});
+let loadingBlock = homeworkContainer.querySelector('#loading-block');
+let filterBlock = homeworkContainer.querySelector('#filter-block');
+let filterInput = homeworkContainer.querySelector('#filter-input');
+let filterResult = homeworkContainer.querySelector('#filter-result');
+let townsPromise = loadTowns();
 
 
+townsPromise
+	.then(
+		searchel,
+		function() {
+
+			let butt = document.createElement('button');
+			butt.innerHTML = 'Повторить';
+
+			homeworkContainer.appendChild(butt);
+
+			loadingBlock.innerHTML = 'Не удалось загрузить города';
+
+			butt.addEventListener('click', function() {
+
+				homeworkContainer.removeChild(butt);
+				loadingBlock.innerHTML = 'Загрузка';
+				let townsPromise = loadTowns();
+				townsPromise.then(searchel);
+			})
+		}
+	);
 
 
 export {
