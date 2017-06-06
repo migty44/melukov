@@ -32,6 +32,66 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
+
+function getCookie () {
+    let strkook = document.cookie.split('; ');
+
+    listTable.innerHTML = '';
+    strkook.forEach(function(item) {
+        strToTable(item);
+    });
+}
+
+function strToTable (item) {
+    let tr = document.createElement('tr');
+
+    item = item.split('=');
+    item.forEach(function(item) {
+        let td1 = document.createElement('td');
+
+        td1.innerHTML = item;
+        tr.appendChild(td1);
+    });
+    var button = document.createElement('button');
+    let td1 = document.createElement('td');
+
+    button.innerHTML = 'delete';
+    button.classList.add('foo');
+    tr.appendChild(td1);
+    td1.appendChild(button);
+    listTable.appendChild(tr);
+}
+
+function deleteCookie(name) {
+    var date = new Date(0);
+
+    document.cookie = name + '=; expires=' + date.toUTCString();
+}
+
+function delCookie () {
+    listTable.addEventListener('click', function(e) {
+        let targetTag = e.target.tagName.toLowerCase();
+
+        if (targetTag == 'button') {
+            let cookid = e.target.parentNode.previousSibling.previousSibling.innerText;
+            let stoke = e.target.parentNode.parentNode;
+
+            deleteCookie(cookid);
+            listTable.removeChild(stoke);
+        }
+    });
+}
+
+function createCookie(name, value) {
+    document.cookie = name + '=' + value;
+}
+
+function emulateClick(target, event) {
+    event = new Event(event);
+
+    target.dispatchEvent(event);
+}
+
 let homeworkContainer = document.querySelector('#homework-container');
 let filterNameInput = homeworkContainer.querySelector('#filter-name-input');
 let addNameInput = homeworkContainer.querySelector('#add-name-input');
@@ -39,8 +99,27 @@ let addValueInput = homeworkContainer.querySelector('#add-value-input');
 let addButton = homeworkContainer.querySelector('#add-button');
 let listTable = homeworkContainer.querySelector('#list-table tbody');
 
+getCookie();
+delCookie();
+
 filterNameInput.addEventListener('keyup', function() {
+    let valInp = filterNameInput.value;
+    let strkook = document.cookie.split('; ');
+
+    listTable.innerHTML = '';
+    strkook.forEach(function(item) {
+        if ( ~ item.indexOf(valInp)) {
+            strToTable(item);
+        }
+    });
 });
 
 addButton.addEventListener('click', () => {
+    let name = addNameInput.value;
+    let value = addValueInput.value;
+
+    if (name != '' && value != '') {
+        createCookie(name, value);
+        emulateClick(filterNameInput, 'keyup');
+    }
 });
